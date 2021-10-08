@@ -28,7 +28,7 @@ public class TopAchatScraper {
 			String reference = doc.select("div > span").first().text();
 			String price = doc.getElementsByAttributeValue("itemprop", "price").attr("content").toString() + "€";
 			System.out.println("Name: " + name);
-			System.out.println(reference);
+			System.out.println("Reference: " + reference);
 			System.out.println(price);
 			
 			String content, screenSize, screenResolution, cpu, dedicatedGpu, chipset, storage, ram, os, weight, gpu;
