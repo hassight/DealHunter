@@ -27,7 +27,7 @@ public class TopAchatScraper {
 			name = name.substring(0, name.indexOf("|")).trim();
 			String reference = doc.select("div > span").first().text();
 			String price = doc.getElementsByAttributeValue("itemprop", "price").attr("content").toString() + "€";
-			System.out.println("Nom : " + name);
+			System.out.println("Name: " + name);
 			System.out.println(reference);
 			System.out.println(price);
 			
