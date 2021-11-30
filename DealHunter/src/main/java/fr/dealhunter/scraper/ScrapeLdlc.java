@@ -3,7 +3,7 @@ package fr.dealhunter.scraper;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,13 +13,14 @@ import org.jsoup.select.Elements;
 public class ScrapeLdlc {
 
   public static void main(String[] args) {
-	  
-
+	  ArrayList<String> tabLinks = new ArrayList<String>();
+	  int nbpage = getNumberpages("https://www.ldlc.com/informatique/ordinateur-portable/pc-portable/c4265/");
+	  System.out.println(nbpage);
     try {
     	
     	String pageRacine = null;
     	
-    	  for (int index = 1; index < 18; index++) {
+    	  for (int index = 1; index < nbpage; index++) {
     		  
     		  if(index == 1) {
     			  
@@ -49,22 +50,25 @@ public class ScrapeLdlc {
     	String newline = System.getProperty("line.separator");
     	
       Document docHome = Jsoup.connect(pageRacine).get();
-      Elements links = docHome.select("[href*=/fiche/]");      
+      Elements links = docHome.select("[href*=/fiche/]");
       for (Element element : links) {
-		
-    	  //System.out.println(element.attr("abs:href"));
+		    	
     	  String link = element.attr("abs:href");
+    	   if(!tabLinks.contains(link)) {
+          	  tabLinks.add(link);
+          System.out.println(link);
           Document doc = Jsoup.connect(link).get();
-          String title = doc.title();
           String url2 = doc.baseUri();
+       
           Elements divPrice = doc.select("div.price > div");
           Elements table = doc.select("div.specsTech table");
           Elements rows = table.select("tr");
           Elements cols = table.select("td");
-          //System.out.println("title: " + title);     
+          //System.out.println(url2);     
           String price2 = (String) divPrice.text().subSequence(0,7);
-          String price3 = price2.replace("€", ".").concat("€");
-          System.out.println(price2);
+          String price3 = price2.replace(" ", "");
+          String price4 = price3.replace("€", ".").concat("€");
+          //System.out.println(price4);
       for (int i = 1; i < cols.size() ; i++) { 
           Element col = cols.get(i);
           //System.out.println(col.text());
@@ -74,7 +78,7 @@ public class ScrapeLdlc {
          gpu = cols.get(44).text();
          ram = cols.get(31).text();
          os = cols.get(9).text();
-         price = price3;
+         price = price4;
          url = url2;
           
 	     if (col.text().contains("kg") && !col.text().contains("W/")) {
@@ -97,13 +101,13 @@ public class ScrapeLdlc {
           
           try {
         	  
-              FileWriter myWriter = new FileWriter("filename12.txt",true);
+              FileWriter myWriter = new FileWriter("filename184.txt",true);
       	      BufferedWriter out = new BufferedWriter(myWriter);
       	      
               out.write("source :"+source+newline+"name :"+name+newline+"url :"+url+newline+"Screen size :"+
               screenSize+newline+"Screen resolution :"+screen_resolution+newline+"Processeur :"+cpu
               +newline+"Carte graphique :"+gpu+newline+"ram :"+ram+newline+"stoackage :"+storage+newline
-              +"systeme d'exploitation :"+os+newline+"poids :"+wheight+newline+"prix :"+price+newline);
+              +"systeme d'exploitation :"+os+newline+"poids :"+wheight+newline+"prix :"+price+newline+pageRacine+newline);
               out.write("###########################################################"+newline);
               out.close();
               //System.out.println("Successfully wrote to the file.");
@@ -113,12 +117,31 @@ public class ScrapeLdlc {
             }
       }
       
+    	   }
     	  }
-
     } catch (IOException e) {
     e.printStackTrace();
     }
+    
+
     }
-
-
+  
+  	public static int getNumberpages(String link) {
+  		int totalPage = 0;
+  		try {
+  			
+  			Document doc = Jsoup.connect(link).get();
+  			Elements element = doc.select("div.listing-product ul") ;
+  			Element linkk = element.last();
+  			String totale = linkk.getElementsByTag("a").text().substring(19, 21);		
+  		    totalPage = Integer.parseInt(totale);
+  		    //System.out.println(totalPage);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+  	
+  	return totalPage;
+  }
+  
   }
