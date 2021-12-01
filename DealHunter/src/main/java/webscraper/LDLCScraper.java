@@ -1,4 +1,4 @@
-package fr.dealhunter.scraper;
+package webscraper;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class ScrapeLdlc {
+public class LDLCScraper {
 
   public static void main(String[] args) {
 	  ArrayList<String> tabLinks = new ArrayList<String>();
